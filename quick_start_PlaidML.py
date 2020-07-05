@@ -1,27 +1,33 @@
-import platform
-if platform.system().lower() == 'darwin':
-    import os
-    os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
-    import keras
-elif platform.system().lower() == 'windows':
-    import tensorflow.keras as keras
+import os
+os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 
-from keras import optimizers
+import keras
+
+# Sequential 模型如下所示：
+
 from keras.models import Sequential
 
 model = Sequential()
+
+# 可以简单地使用 .add() 来堆叠模型：
 
 from keras.layers import Dense
 
 model.add(Dense(units=64, activation='relu', input_dim=100))
 model.add(Dense(units=10, activation='softmax'))
 
+# 在完成了模型的构建后, 可以使用 .compile() 来配置学习过程：
+
 model.compile(loss='categorical_crossentropy',
                 optimizer='sgd',
                 metrics=['accuracy'])
 
+# 完全控制
+
 model.compile(loss=keras.losses.categorical_crossentropy,
                 optimizer=keras.optimizers.SGD(lr=0.01, momentum=0.9, nesterov=True))
+
+# 创建一个 Sequential 模型：
 
 from keras.layers import Dense, Activation
 
@@ -32,15 +38,22 @@ model = Sequential([
     Activation('softmax'),
 ])
 
+# 简单地使用 .add() 方法将各层添加到模型中：
+
 model = Sequential()
 model.add(Dense(32, input_dim=784))
 model.add(Activation('relu'))
+
+# 指定输入数据的尺寸
+# 下面的代码片段是等价的：
 
 model = Sequential()
 model.add(Dense(32, input_shape=(784,)))
 
 model = Sequential()
 model.add(Dense(32, input_dim=784))
+
+# 模型编译
 
 # 多分类问题
 model.compile(optimizer='rmsprop',
@@ -66,6 +79,8 @@ model.compile(optimizer='rmsprop',
                 loss='binary_crossentropy',
                 metrics=['accuracy', mean_pred])
 
+
+# 模型训练
 
 # 对于具有 2 个类的单输入模型（二进制分类）：
 
